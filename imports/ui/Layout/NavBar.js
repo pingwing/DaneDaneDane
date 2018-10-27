@@ -8,9 +8,6 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 
 const styles = {
-  root: {
-    flexGrow: 1
-  },
   toolbar: {
     height: 80,
     minHeight: 0,

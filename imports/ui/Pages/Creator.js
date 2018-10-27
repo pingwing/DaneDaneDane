@@ -1,7 +1,8 @@
 import React, { Component } from "react";
+import { Page } from "../Layout/Page";
 
 export default class Creator extends Component {
   render() {
-    return <div className="inbox-comp">Template</div>;
+    return <Page footer={<div>Footer</div>}>Template</Page>;
   }
 }
