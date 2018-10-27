@@ -1,32 +1,34 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import { Router, Route, Switch } from 'react-router'
+import { Link } from 'react-router-dom'
+import createHistory from 'history/createBrowserHistory'
+import About from '/imports/ui/About'
+import Inbox from '/imports/ui/Inbox'
+import Main from '/imports/ui/Main'
 
-// App component - represents the whole app
+const history = createHistory()
+
 export default class App extends Component {
-  getTasks() {
-    return [
-      { _id: 1, text: 'This is task 1' },
-      { _id: 2, text: 'This is task 2' },
-      { _id: 3, text: 'This is task 3' },
-    ];
-  }
-
-  // renderTasks() {
-  //   return this.getTasks().map((task) => (
-  //     <Task key={task._id} task={task} />
-  //   ));
-  // }
-
-  render() {
+  render () {
     return (
-      <div className="container">
-        <header>
-          <h1>Todo List</h1>
-        </header>
+      <Router history={history}>
+        <div>
+          <div className="nav">
+            <ul>
+              <li><Link to="/about">About</Link></li>
+              <li><Link to="/inbox">Inbox</Link></li>
+            </ul>
+          </div>
+          <div className="app">
+            <Switch>
+              <Route path="/" component={Main} exact />
+              <Route path="/about" component={About} />
+              <Route path="/inbox" component={Inbox} />
+            </Switch>
 
-        <ul>
-          {/*{this.renderTasks()}*/}
-        </ul>
-      </div>
-    );
+          </div>
+        </div>
+      </Router>
+    )
   }
 }
