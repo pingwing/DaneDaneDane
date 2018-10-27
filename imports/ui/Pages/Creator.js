@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Page } from "../Layout/Page";
 import DataType from "./DataType";
 import Value from "./Value";
+import Categories from "./Categories";
 
 import StepZilla from "react-stepzilla";
 import "./StepZilla.css";
@@ -15,7 +16,12 @@ export default class Creator extends Component {
   constructor(props = {}) {
     super(props);
     this.state = {
-      categories: [],
+      categories: [
+        {
+          name: "Płeć",
+          values: ["Mężczyzna", "Kobieta"]
+        }
+      ],
       value: {
         type: "",
         value: ""
@@ -37,7 +43,10 @@ export default class Creator extends Component {
           />
         )
       },
-      // { name: "Kategorie", component: <Categories /> },
+      {
+        name: "Kategorie",
+        component: <Categories categories={this.state.categories} />
+      },
       { name: "Podgląd", component: <DataType /> },
       { name: "Typ podkategorii", component: <DataType /> },
       { name: "Pobierz plik", component: <DataType /> }
@@ -69,6 +78,16 @@ export default class Creator extends Component {
         ...this.state.value,
         name: event.target.value
       }
+    });
+  };
+
+  onAddCategory = event => {
+    this.setState({
+      ...this.state,
+      categories: this.state.categories.push({
+        name: event.target.value,
+        values: []
+      })
     });
   };
 }
