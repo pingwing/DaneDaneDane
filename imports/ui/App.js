@@ -1,34 +1,60 @@
-import React, { Component } from 'react'
-import { Router, Route, Switch } from 'react-router'
-import { Link } from 'react-router-dom'
-import createHistory from 'history/createBrowserHistory'
-import About from '/imports/ui/About'
-import Inbox from '/imports/ui/Inbox'
-import Main from '/imports/ui/Main'
+import React, { Component } from "react";
+import { Router, Route, Switch } from "react-router";
+import createHistory from "history/createBrowserHistory";
+import Creator from "./Pages/Creator";
+import Main from "./Pages/Main";
+import NavBar from "./Layout/NavBar";
+import Typography from "@material-ui/core/Typography";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
-const history = createHistory()
+const history = createHistory();
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#0f2548"
+    }
+  }
+});
 
 export default class App extends Component {
-  render () {
+  render() {
     return (
-      <Router history={history}>
-        <div>
-          <div className="nav">
-            <ul>
-              <li><Link to="/about">About</Link></li>
-              <li><Link to="/inbox">Inbox</Link></li>
-            </ul>
-          </div>
-          <div className="app">
+      <MuiThemeProvider theme={theme}>
+        <Router history={history}>
+          <>
+            <NavBar />
             <Switch>
               <Route path="/" component={Main} exact />
-              <Route path="/about" component={About} />
-              <Route path="/inbox" component={Inbox} />
+              <Route
+                path="/about"
+                component={() => (
+                  <div>
+                    <h1>Po co dobre dane?</h1>
+                  </div>
+                )}
+              />
+              <Route
+                path="/best_practices"
+                component={() => (
+                  <div>
+                    <h1>Dobre praktyki</h1>
+                  </div>
+                )}
+              />
+              <Route path="/creator" component={Creator} />
+              <Route
+                path="/upload"
+                component={() => (
+                  <div>
+                    <h1>Udostępnij dane</h1>
+                  </div>
+                )}
+              />
             </Switch>
-
-          </div>
-        </div>
-      </Router>
-    )
+          </>
+        </Router>
+      </MuiThemeProvider>
+    );
   }
 }
