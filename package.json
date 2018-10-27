@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "exceljs": "^1.6.2",
     "history": "^4.7.2",
     "meteor-node-stubs": "^0.4.1",
     "react": "^16.6.0",
@@ -22,5 +23,8 @@
       "server": "server/main.js"
     },
     "testModule": "tests/main.js"
+  },
+  "devDependencies": {
+    "prettier": "^1.14.3"
   }
 }
