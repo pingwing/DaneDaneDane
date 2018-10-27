@@ -3,6 +3,7 @@ import { Router, Route, Switch } from "react-router";
 import createHistory from "history/createBrowserHistory";
 import Creator from "/imports/ui/Creator";
 import Main from "/imports/ui/Main";
+import GoodPractices from "/imports/ui/GoodPractices";
 import NavBar from "./Layout/NavBar";
 import Typography from "@material-ui/core/Typography";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
@@ -37,11 +38,7 @@ export default class App extends Component {
                 />
                 <Route
                   path="/best_practices"
-                  component={() => (
-                    <div>
-                      <h1>Dobre praktyki</h1>
-                    </div>
-                  )}
+                  component={GoodPractices}
                 />
                 <Route path="/creator" component={Creator} />
                 <Route
