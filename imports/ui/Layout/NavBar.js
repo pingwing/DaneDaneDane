@@ -23,16 +23,12 @@ const styles = {
   }
 };
 
-const LinkTab = props => (
-  <Tab component="a" onClick={event => event.preventDefault()} {...props} />
-);
-
 const SimpleAppBar = props => {
   const { classes } = props;
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default">
+      <AppBar position="static" color="primary">
         <Toolbar className={classes.toolbar}>
           <Typography variant="h6" color="inherit">
             Otwarte dane na 5
