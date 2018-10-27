@@ -26,5 +26,7 @@
     },
     "testModule": "tests/main.js"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "prettier": "^1.14.3"
+  }
 }
