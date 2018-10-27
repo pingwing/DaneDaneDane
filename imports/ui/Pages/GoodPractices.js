@@ -6,7 +6,6 @@ export default class GoodPractices extends Component {
     Meteor.call('generateXls', (err, resp) => {
       if (err) {
         console.log('PINGWING: 8 err', err);
-        console.log('PINGWING: 8 ERROR');
       } else {
         downloadPdf(resp, 'test.xlsx')
       }
@@ -22,8 +21,8 @@ export default class GoodPractices extends Component {
   }
 }
 
-export const downloadPdf = (printMaterials, fileName) => {
-  const hrefData = URL.createObjectURL(createBlobFromPrintMaterials(printMaterials))
+export const downloadPdf = (dataStream, fileName) => {
+  const hrefData = URL.createObjectURL(createBlobFromData(dataStream))
   const link = document.createElement('a')
   link.download = fileName
   link.href = hrefData
@@ -32,8 +31,8 @@ export const downloadPdf = (printMaterials, fileName) => {
   document.body.removeChild(link)
 }
 
-function createBlobFromPrintMaterials (printMaterials) {
-  const byteCharacters = atob(printMaterials)
+function createBlobFromData (dataStream) {
+  const byteCharacters = atob(dataStream)
   const byteNumbers = new Array(byteCharacters.length)
   for (let i = 0; i < byteCharacters.length; i++) {
     byteNumbers[i] = byteCharacters.charCodeAt(i)
