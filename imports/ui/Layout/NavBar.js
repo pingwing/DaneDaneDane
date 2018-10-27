@@ -12,10 +12,14 @@ const styles = {
     flexGrow: 1
   },
   toolbar: {
+    height: 80,
+    minHeight: 0,
     justifyContent: "space-between"
   },
   navLinks: {
-    display: "flex"
+    display: "flex",
+    height: "100%",
+    alignItems: "flex-end"
   }
 };
 
@@ -33,7 +37,7 @@ const SimpleAppBar = props => {
           <Typography variant="h6" color="inherit">
             Otwarte dane na 5
           </Typography>
-          <Tabs value={location.pathname}>
+          <Tabs value={location.pathname} className={classes.navLinks}>
             <Tab
               label="Po co dobre dane?"
               value="/about"
