@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
+import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -33,10 +33,31 @@ const SimpleAppBar = props => {
           <Typography variant="h6" color="inherit">
             Otwarte dane na 5
           </Typography>
-          <Tabs>
-            <LinkTab label="Page One" href="page1" />
-            <LinkTab label="Page Two" href="page2" />
-            <LinkTab label="Page Three" href="page3" />
+          <Tabs value={location.pathname}>
+            <Tab
+              label="Po co dobre dane?"
+              value="/about"
+              component={Link}
+              to="/about"
+            />
+            <Tab
+              label="Dobre praktyki"
+              value="/best_practices"
+              component={Link}
+              to="/best_practices"
+            />
+            <Tab
+              label="Stwórz szablon"
+              value="/creator"
+              component={Link}
+              to="/creator"
+            />
+            <Tab
+              label="Udostępnij dane"
+              value="/upload"
+              component={Link}
+              to="/upload"
+            />
           </Tabs>
         </Toolbar>
       </AppBar>

@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { Router, Route, Switch } from "react-router";
-import { Link } from "react-router-dom";
 import createHistory from "history/createBrowserHistory";
-import About from "/imports/ui/About";
-import Inbox from "/imports/ui/Inbox";
+import Creator from "/imports/ui/Creator";
 import Main from "/imports/ui/Main";
 import NavBar from "./Layout/NavBar";
 
@@ -15,23 +13,34 @@ export default class App extends Component {
       <Router history={history}>
         <div>
           <NavBar />
-          <div className="nav">
-            <ul>
-              <li>
-                <Link to="/about">About</Link>
-              </li>
-              <li>
-                <Link to="/inbox">Inbox</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="app">
-            <Switch>
-              <Route path="/" component={Main} exact />
-              <Route path="/about" component={About} />
-              <Route path="/inbox" component={Inbox} />
-            </Switch>
-          </div>
+          <Switch>
+            <Route path="/" component={Main} exact />
+            <Route
+              path="/about"
+              component={() => (
+                <div>
+                  <h1>Po co dobre dane?</h1>
+                </div>
+              )}
+            />
+            <Route
+              path="/best_practices"
+              component={() => (
+                <div>
+                  <h1>Dobre praktyki</h1>
+                </div>
+              )}
+            />
+            <Route path="/creator" component={Creator} />
+            <Route
+              path="/upload"
+              component={() => (
+                <div>
+                  <h1>Udostępnij dane</h1>
+                </div>
+              )}
+            />
+          </Switch>
         </div>
       </Router>
     );
