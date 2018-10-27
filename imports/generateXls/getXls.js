@@ -12,7 +12,7 @@ const toColumnName = (num) => {
   return ret
 }
 
-const generateWorkbook = (categories) => {
+const generateWorkbook = ({ dataStructure, timeFrame }) => {
   const workbook = new Excel.Workbook()
 
   const dataWS = workbook.addWorksheet('Dane')
@@ -20,6 +20,8 @@ const generateWorkbook = (categories) => {
   let numberOfHeaderRows = 1
 
   const startRow = numberOfHeaderRows + 1
+
+  const headersStructure = getFlatHeadersStructure(dataStructure)
 
   const lastLevelHeaders = ['osobowe', 'ciężarowe']
 
@@ -46,8 +48,8 @@ const generateWorkbook = (categories) => {
   return workbook
 }
 
-export const getXls = async () => {
-  const workbook = generateWorkbook([])
+export const getXls = async (headersData) => {
+  const workbook = generateWorkbook(headersData)
 
   const stream = new Stream.PassThrough()
   await workbook.xlsx.write(stream)

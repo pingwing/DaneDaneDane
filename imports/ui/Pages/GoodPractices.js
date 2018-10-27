@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor'
 
 export default class GoodPractices extends Component {
   getXls = () => {
-    Meteor.call('generateXls', (err, resp) => {
+    Meteor.call('getXls', {dataStructure}, (err, resp) => {
       if (err) {
         console.log('PINGWING: 8 err', err);
       } else {

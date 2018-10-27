@@ -4,7 +4,7 @@ import { readXls } from '/imports/readXls/readXls'
 
 if (Meteor.isServer) {
   Meteor.methods({
-    'generateXls': () => getXls(),
+    'getXls': ({dataStructure, timeFrame}) => getXls({dataStructure, timeFrame}),
     'readXls': data => readXls(data),
   })
 }
