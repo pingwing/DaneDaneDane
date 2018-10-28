@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { Meteor } from "meteor/meteor";
+import { downloadPdf } from "/imports/utils";
+import { prepareCategoriesForTable } from "/imports/utils";
 
 const categories = [
   {
     name: "Agencja ratingowa",
-    values: ["Fitch", "Moody's", "S&P"],
+    values: ["Fitch", "Moody's", "S&P"]
   },
   { name: "Waluta", values: ["Waluta zagraniczna", "Waluta krajowa"] },
   { name: "Rodzaj terminu", values: ["Długoterminowa", "Krótkoterminowa"] },
@@ -41,23 +43,13 @@ const categories = [
 
 const valuesTypes = [{ name: "Rating", dataType: "Tekst" }];
 
-const compareCategoriesByNoOfElements = (cat1, cat2) => {
-  if (cat1.values.length < cat2.values.length) {
-    return -1;
-  }
-  if (cat1.values.length > cat2.values.length) {
-    return 1;
-  }
-  return 0;
-};
-
 export default class GoodPractices extends Component {
   getXls = () => {
-    const categories = this.prepareCategoriesForTable();
+    const categoriesToUse = prepareCategoriesForTable(categories);
 
     console.log("PINGWING: 51 dataStructure", categories);
 
-    Meteor.call("getXls", {categories, valuesTypes}, (err, resp) => {
+    Meteor.call("getXls", { categories: categoriesToUse, valuesTypes }, (err, resp) => {
       if (err) {
         console.log("PINGWING: 8 err", err);
       } else {
@@ -66,46 +58,14 @@ export default class GoodPractices extends Component {
     });
   };
 
-  prepareCategoriesForTable = () => {
-    const copyOfCategories = [...categories];
-    copyOfCategories.sort(compareCategoriesByNoOfElements);
-
-    const categoryInRows = copyOfCategories.pop();
-    const categoriesInCols = [...copyOfCategories].reverse();
-
-    return { categoryInRows, categoriesInCols };
-  };
-
   render() {
     return (
       <div>
         <h1>Dobre praktyki</h1>
 
         <button onClick={this.getXls}>Pobierz XLS</button>
-        <button onClick={this.prepareCategoriesForTable}>Test</button>
+        <button onClick={prepareCategoriesForTable}>Test</button>
       </div>
     );
   }
-}
-
-export const downloadPdf = (dataStream, fileName) => {
-  const hrefData = URL.createObjectURL(createBlobFromData(dataStream));
-  const link = document.createElement("a");
-  link.download = fileName;
-  link.href = hrefData;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
-function createBlobFromData(dataStream) {
-  const byteCharacters = atob(dataStream);
-  const byteNumbers = new Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-  const byteArray = new Uint8Array(byteNumbers);
-  return new Blob([byteArray], {
-    type: " application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  });
 }

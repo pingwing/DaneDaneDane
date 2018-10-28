@@ -1,3 +1,4 @@
+import { Meteor } from "meteor/meteor"
 import React, { Component } from "react";
 import { Page } from "../Layout/Page";
 import Preview from "./Preview";
@@ -8,6 +9,10 @@ import Categories from "./Categories";
 import StepZilla from "react-stepzilla";
 import "./StepZilla.css";
 import "react-sortable-tree/style.css";
+
+import { downloadPdf, prepareCategoriesForTable } from "/imports/utils";
+
+
 
 export default class Creator extends Component {
   constructor(props = {}) {
@@ -65,7 +70,24 @@ export default class Creator extends Component {
   }
 
   onDownload = () => {
-    console.log("Dane dla Przemka", this.serializeData());
+    // console.log("Dane dla Przemka", this.serializeData());
+    const {categories, valuesTypes} = this.serializeData()
+    // console.log('PINGWING: 75 this.serializeData()', this.serializeData());
+
+    const categoriesToUse = prepareCategoriesForTable(categories);
+
+    // console.log('PINGWING: 79 categoriesToUse', categoriesToUse);
+
+    // console.log("PINGWING: 51 dataStructure", categories);
+
+    Meteor.call("getXls", {categories: categoriesToUse, valuesTypes}, (err, resp) => {
+      if (err) {
+        console.log("PINGWING: 8 err", err);
+      } else {
+        downloadPdf(resp, "test.xlsx");
+      }
+    });
+
   };
 
   serializeData = () => ({
@@ -142,3 +164,5 @@ export default class Creator extends Component {
     });
   };
 }
+
+
