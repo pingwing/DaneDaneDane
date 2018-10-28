@@ -5,51 +5,119 @@ const getCellPos = (startRow, row, col) => {
   return true
 }
 
-const toColumnName = (num) => {
+const toColumnName = num => {
   for (var ret = '', a = 1, b = 26; (num -= a) >= 0; a = b, b *= 26) {
     ret = String.fromCharCode(parseInt((num % b) / a) + 65) + ret
   }
   return ret
 }
 
-const generateWorkbook = ({ dataStructure, timeFrame }) => {
+const toCellAddress = ({ row, col }) => {
+  return `${toColumnName(col + 1)}${row + 1}`
+}
+
+const multiplyAllElements = arr => arr.reduce((a, b) => a * b)
+
+const generateWorkbook = dataStructure => {
+  const { categories, valuesTypes } = dataStructure
+  const { categoryInRows, categoriesInCols } = categories
+
+  const noOfHeaderRows = categoriesInCols.length + 1
+
   const workbook = new Excel.Workbook()
 
-  const dataWS = workbook.addWorksheet('Dane')
+  const lockHeadersRows = {
+    views: [{ state: 'frozen', xSplit: 1, ySplit: noOfHeaderRows }]
+  }
+  const dataWS = workbook.addWorksheet('Dane', lockHeadersRows)
 
-  let numberOfHeaderRows = 1
+  const noOfColumnsInCategories = []
+  let level = 0;
+  [...categoriesInCols].reverse().forEach(category => {
+    const noInThisLevel = category.values.length
+    const lastLevel = level - 1
+    const noInLastLevel = level > 0 ? noOfColumnsInCategories[lastLevel] : 1
+    noOfColumnsInCategories.push(noInThisLevel * noInLastLevel)
+    level += 1
+  })
+  noOfColumnsInCategories.pop()
+  noOfColumnsInCategories.reverse()
+  noOfColumnsInCategories.push(1)
 
-  const startRow = numberOfHeaderRows + 1
+  const copyOfNoOfColumnsInCategories = [...noOfColumnsInCategories]
+  const reversedCopyOfNoOfColumnsInCategories = [
+    ...noOfColumnsInCategories
+  ].reverse()
+  const colsDesc = []
+  const numberOfAllCols =
+    multiplyAllElements(copyOfNoOfColumnsInCategories) *
+    [...categoriesInCols].pop().values.length
+  level = 0;
+  [...categoriesInCols].reverse().forEach(row => {
+    const mergeColsNo = reversedCopyOfNoOfColumnsInCategories[level]
+    const multiplyBy = numberOfAllCols / (row.values.length * mergeColsNo)
+    let headerValues = []
+    for (let i = 0; i < multiplyBy; i += 1) {
+      headerValues = [...headerValues, ...row.values]
+    }
+    copyOfNoOfColumnsInCategories.shift()
 
-  const headersStructure = getFlatHeadersStructure(dataStructure)
-
-  const lastLevelHeaders = ['osobowe', 'ciężarowe']
+    colsDesc.push({ headerValues, mergeColsNo })
+    level += 1
+  })
 
   // generate headers
-  // let currentRow = 0
-  // let currentCol = 0
-  // lastLevelHeaders.forEach(header => {
-  //   const cellPos = getCellPos(startRow, currentRow, currentCol)
-  //   dataWS.getCell(cellPos).value = header
-  //   currentCol += 1
-  // })
+  const startRow = 0
+  let currentRow = startRow
+  const startCol = 1
+  let currentCol = startCol
+  let currentHeaderLevel = 0
 
-  dataWS.addRow(lastLevelHeaders)
+  colsDesc.reverse()
 
-  //generate rows categories
-  // let currentRow = 0
-  // let currentCol = 0
-  // lastLevelHeaders.forEach(header => {
-  //   const cellPos = getCellPos(startRow, currentRow, currentCol)
-  //   dataWS.getCell(cellPos).value = header
-  //   currentCol += 1
-  // })
+  colsDesc.forEach(row => {
+    const noOfColumnsToMerge = row.mergeColsNo
+    row.headerValues.forEach(value => {
+      const leftCell = toCellAddress({ row: currentRow, col: currentCol })
+      if (noOfColumnsToMerge - 1 > 0) {
+        const rightCell = toCellAddress({
+          row: currentRow,
+          col: currentCol + noOfColumnsToMerge - 1
+        })
+        dataWS.mergeCells(`${leftCell}:${rightCell}`)
+      }
+
+      dataWS.getCell(leftCell).value = value
+      currentCol += noOfColumnsToMerge
+    })
+    currentRow += 1
+    currentHeaderLevel = 1
+    currentCol = startCol
+  })
+
+  const valueTypeLabel = valuesTypes[0].dataType
+  // generate header for data types
+  for (let i = 0; i < numberOfAllCols; i += 1) {
+    const cellAddrToFill = toCellAddress({ row: currentRow, col: currentCol })
+    dataWS.getCell(cellAddrToFill).value = valueTypeLabel
+    currentCol += 1
+  }
+  currentRow += 1
+  currentCol = startCol
+
+  // generate rows
+  currentCol = 0
+  categoryInRows.values.forEach(value => {
+    const cellAddrToFill = toCellAddress({ row: currentRow, col: currentCol })
+    dataWS.getCell(cellAddrToFill).value = value
+    currentRow += 1
+  })
 
   return workbook
 }
 
-export const getXls = async (headersData) => {
-  const workbook = generateWorkbook(headersData)
+export const getXls = async dataStructure => {
+  const workbook = generateWorkbook(dataStructure)
 
   const stream = new Stream.PassThrough()
   await workbook.xlsx.write(stream)
