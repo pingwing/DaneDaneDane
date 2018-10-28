@@ -19,23 +19,31 @@ export const readXls = async data => {
 
   const firstSheet = workbook.getWorksheet(1)
   firstSheet.eachRow(function (row, rowNumber) {
-    console.log('PINGWING: 19 row.values', row.values);
-
     if (rowNumber < 10 && typeof row.values[0] === 'undefined' && typeof row.values[1] === 'undefined') {
       const categoryValues = row.values.splice(2)
       headerRows.push(categoryValues)
     } else {
-      console.log('PINGWING: 26 row.values', row.values);
       const rowCategoryValue = row.values[1]
       const rowValues = row.values.splice(2)
-      console.log('PINGWING: 29 rowValues', rowValues);
       valuesRows.push({rowCategoryValue, rowValues})
     }
 
   })
 
-  const dataTable =
+  const dataTypes = headerRows.pop()
+
+
 
   console.log('PINGWING: 31 valuesRows', valuesRows);
   console.log('PINGWING: 25 headerRows', headerRows);
+  console.log('PINGWING: 41 dataTypes', dataTypes);
+
+  // var df = new dataForge.DataFrame({
+  //   columnNames: ["Col1", "Col2", "Col3"],
+  //   rows: [
+  //     [1, 'hello', new Date(...)],
+  //     [5, 'computer', new Date(...)],
+  //     [10, 'good day', new Date(...)]
+  //   ]
+  // });
 }
