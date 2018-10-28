@@ -1,49 +1,80 @@
-import Excel from 'exceljs'
-import { Readable } from 'readable-stream'
+import Excel from "exceljs";
+import { Readable } from "readable-stream";
+import dataForge from "data-forge";
 
 export const readXls = async data => {
-  const xlsData = new Buffer(data)
-  const stream = new Readable()
+  const xlsData = new Buffer(data);
+  const stream = new Readable();
 
-  stream.push(xlsData)
-  stream.push(null)
+  stream.push(xlsData);
+  stream.push(null);
 
-  const workbook = new Excel.Workbook()
+  const workbook = new Excel.Workbook();
 
-  await workbook.xlsx.read(stream)
+  await workbook.xlsx.read(stream);
 
-  const headerRows = []
-  const valuesRows = []
+  const headerRows = [];
+  const valuesRows = [];
 
-  const dataErrors = []
+  const dataErrors = [];
 
-  const firstSheet = workbook.getWorksheet(1)
-  firstSheet.eachRow(function (row, rowNumber) {
-    if (rowNumber < 10 && typeof row.values[0] === 'undefined' && typeof row.values[1] === 'undefined') {
-      const categoryValues = row.values.splice(2)
-      headerRows.push(categoryValues)
+  const dataCategories = [];
+
+  const firstSheet = workbook.getWorksheet(1);
+
+  const noOfHeaderRows = firstSheet.views[0].ySplit;
+  console.log("PINGWING: 23 noOfHeaderRows", noOfHeaderRows);
+
+  firstSheet.eachRow(function(row, rowNumber) {
+    if (rowNumber <= noOfHeaderRows) {
+      const dataCategory = row.values[1];
+      dataCategories.push(dataCategory);
+      const categoryValues = row.values.splice(2);
+      headerRows.push(categoryValues);
     } else {
-      const rowCategoryValue = row.values[1]
-      const rowValues = row.values.splice(2)
-      valuesRows.push({rowCategoryValue, rowValues})
+      const rowCategoryValue = row.values[1];
+      const rowValues = row.values.splice(2);
+      valuesRows.push({ rowCategoryValue, rowValues });
     }
+  });
 
-  })
+  const dataCategoryInRows = dataCategories.pop();
 
-  const dataTypes = headerRows.pop()
+  const rows = [];
 
+  valuesRows.forEach(row => {
+    let rowHeaderIndex = 0;
+    row.rowValues.forEach(dataValue => {
+      const ouputDataRow = [];
+      let dataCategoryIndex = 0;
+      dataCategories.forEach(dataCategory => {
+        const currentHeaderRow = headerRows[dataCategoryIndex];
+        const currentHeaderValue = currentHeaderRow[rowHeaderIndex];
+        ouputDataRow.push(currentHeaderValue);
+        dataCategoryIndex += 1;
+      });
+      ouputDataRow.push(row.rowCategoryValue);
+      ouputDataRow.push(dataValue);
+      rows.push(ouputDataRow);
+      rowHeaderIndex += 1;
+    });
+  });
 
+  dataCategories.push(dataCategoryInRows);
+  dataCategories.push("Value");
 
-  console.log('PINGWING: 31 valuesRows', valuesRows);
-  console.log('PINGWING: 25 headerRows', headerRows);
-  console.log('PINGWING: 41 dataTypes', dataTypes);
+  const dataFrameData = {
+    columnNames: dataCategories,
+    rows
+  };
 
-  // var df = new dataForge.DataFrame({
-  //   columnNames: ["Col1", "Col2", "Col3"],
-  //   rows: [
-  //     [1, 'hello', new Date(...)],
-  //     [5, 'computer', new Date(...)],
-  //     [10, 'good day', new Date(...)]
-  //   ]
-  // });
-}
+  // const parsedData = new dataForge.DataFrame(dataFrameData);
+  //
+  // const csv = parsedData.toCSV();
+  // console.log("PINGWING: 80 csv", csv);
+  //
+  // const json = parsedData.toJSON();
+  // console.log("PINGWING: 80 json", json);
+
+  return { dataFrameData };
+};
