@@ -60,9 +60,32 @@ export default class Creator extends Component {
         <div className="step-progress">
           <StepZilla steps={steps} />
         </div>
+        <button onClick={this.stringifyData}>Stringify!</button>
+        <button onClick={this.parseData}>Parse!</button>
+        <textarea value={this.state.data} onChange={this.updateData} />
       </Page>
     );
   }
+
+  parseData = () => {
+    this.setState({
+      ...JSON.parse(this.state.data),
+      data: ""
+    });
+  };
+
+  updateData = event => {
+    event.preventDefault();
+    this.setState({
+      data: event.target.value
+    });
+  };
+
+  stringifyData = () => {
+    this.setState({
+      data: JSON.stringify(this.state)
+    });
+  };
 
   onDownload = () => {
     console.log("Dane dla Przemka", this.serializeData());
@@ -105,6 +128,7 @@ export default class Creator extends Component {
   };
 
   onNewCategoryAdd = () => {
+    if (this.state.newCategoryName === "") return;
     this.setState({
       categories: [
         ...this.state.categories,
