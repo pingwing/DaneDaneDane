@@ -16,10 +16,12 @@ export default class Creator extends Component {
   constructor(props = {}) {
     super(props);
     this.state = {
+      newCategoryName: "",
       categories: [
         {
           name: "Płeć",
-          values: ["Mężczyzna", "Kobieta"]
+          values: ["Mężczyzna", "Kobieta"],
+          newValue: ""
         }
       ],
       value: {
@@ -45,7 +47,15 @@ export default class Creator extends Component {
       },
       {
         name: "Kategorie",
-        component: <Categories categories={this.state.categories} />
+        component: (
+          <Categories
+            categories={this.state.categories}
+            newCategoryName={this.state.newCategoryName}
+            changeNewCategory={this.onNewCategoryChange}
+            addNewCategory={this.onNewCategoryAdd}
+            categoryNewValueChange={this.onCategoryNewValueChange}
+          />
+        )
       },
       { name: "Podgląd", component: <DataType /> },
       { name: "Typ podkategorii", component: <DataType /> },
@@ -60,6 +70,37 @@ export default class Creator extends Component {
       </Page>
     );
   }
+
+  onCategoryNewValueChange = (categoryName, event) => {
+    console.log(categoryName);
+    console.log(event);
+    // this.setState({
+    //   ...this.state,
+    //   categories: this.state.categories.
+    // })
+  };
+
+  onNewCategoryAdd = () => {
+    this.setState({
+      ...this.state,
+      categories: [
+        ...this.state.categories,
+        {
+          name: this.state.newCategoryName,
+          values: [],
+          newValue: ""
+        }
+      ],
+      newCategoryName: ""
+    });
+  };
+
+  onNewCategoryChange = event => {
+    this.setState({
+      ...this.state,
+      newCategoryName: event.target.value
+    });
+  };
 
   onSetValueType = event => {
     this.setState({
@@ -78,16 +119,6 @@ export default class Creator extends Component {
         ...this.state.value,
         name: event.target.value
       }
-    });
-  };
-
-  onAddCategory = event => {
-    this.setState({
-      ...this.state,
-      categories: this.state.categories.push({
-        name: event.target.value,
-        values: []
-      })
     });
   };
 }
