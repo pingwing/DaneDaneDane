@@ -3,6 +3,7 @@ import { Router, Route, Switch } from "react-router";
 import createHistory from "history/createBrowserHistory";
 import Creator from "./Pages/Creator";
 import Main from "./Pages/Main";
+import Upload from "./Pages/Upload";
 import GoodPractices from "./Pages/GoodPractices";
 import FileUpload from "./Pages/FileUpload";
 import NavBar from "./Layout/NavBar";
@@ -39,14 +40,7 @@ export default class App extends Component {
               <Route path="/best_practices" component={GoodPractices} />
               <Route path="/fupl" component={FileUpload} />
               <Route path="/creator" component={Creator} />
-              <Route
-                path="/upload"
-                component={() => (
-                  <div>
-                    <h1>Udostępnij dane</h1>
-                  </div>
-                )}
-              />
+              <Route path="/upload" component={Upload} />
             </Switch>
           </>
         </Router>
