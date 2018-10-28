@@ -31,40 +31,27 @@ const generateWorkbook = dataStructure => {
   }
   const dataWS = workbook.addWorksheet('Dane', lockHeadersRows)
 
-  const noOfColumnsInCategories = []
-  let level = 0;
-  [...categoriesInCols].reverse().forEach(category => {
-    const noInThisLevel = category.values.length
-    const lastLevel = level - 1
-    const noInLastLevel = level > 0 ? noOfColumnsInCategories[lastLevel] : 1
-    noOfColumnsInCategories.push(noInThisLevel * noInLastLevel)
-    level += 1
-  })
-  noOfColumnsInCategories.pop()
-  noOfColumnsInCategories.reverse()
-  noOfColumnsInCategories.push(1)
+  const noOfColumnsInCategories = categoriesInCols.map(category => category.values.length)
 
   const copyOfNoOfColumnsInCategories = [...noOfColumnsInCategories]
-  const reversedCopyOfNoOfColumnsInCategories = [
-    ...noOfColumnsInCategories
-  ].reverse()
+  const reversedCopyOfNoOfColumnsInCategories = [...noOfColumnsInCategories].reverse()
   const colsDesc = []
-  const numberOfAllCols =
-    multiplyAllElements(copyOfNoOfColumnsInCategories) *
-    [...categoriesInCols].pop().values.length
-  level = 0;
+  const numberOfAllCols = multiplyAllElements(copyOfNoOfColumnsInCategories)
+  let level = 0;
   [...categoriesInCols].reverse().forEach(row => {
-    const mergeColsNo = reversedCopyOfNoOfColumnsInCategories[level]
-    const multiplyBy = numberOfAllCols / (row.values.length * mergeColsNo)
+    const mergeColsNo = numberOfAllCols / multiplyAllElements(reversedCopyOfNoOfColumnsInCategories)
     let headerValues = []
+    const multiplyBy = numberOfAllCols / (mergeColsNo * row.values.length)
     for (let i = 0; i < multiplyBy; i += 1) {
       headerValues = [...headerValues, ...row.values]
     }
-    copyOfNoOfColumnsInCategories.shift()
+    reversedCopyOfNoOfColumnsInCategories.shift()
 
     colsDesc.push({ headerValues, mergeColsNo })
     level += 1
   })
+
+  console.log('PINGWING: 69 colsDesc', colsDesc)
 
   // generate headers
   const startRow = 0
