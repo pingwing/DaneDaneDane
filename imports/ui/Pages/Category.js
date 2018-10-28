@@ -20,7 +20,13 @@ export default class Category extends Component {
               newValueChange={this.props.newValueChange}
               value={this.props.category.newValue}
             />
-            <button>Dodaj</button>
+            <button
+              onClick={() => {
+                this.props.addNewValue(this.props.category.name);
+              }}
+            >
+              Dodaj
+            </button>
           </li>
         </ul>
       </div>

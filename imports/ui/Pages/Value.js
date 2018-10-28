@@ -24,7 +24,7 @@ export default class DataType extends Component {
             variant="outlined"
           />
           <RadioGroup
-            value={this.props.value.type}
+            value={this.props.value.dataType}
             onChange={this.props.setValueType}
           >
             <FormControlLabel

@@ -21,16 +21,14 @@ export default class Creator extends Component {
         }
       ],
       value: {
-        type: "",
-        value: ""
+        dataType: "",
+        name: ""
       },
-      dataType: "",
       levelsNumber: undefined
     };
   }
 
   render() {
-    console.log(this.state.categories);
     const steps = [
       {
         name: "Wartości",
@@ -51,6 +49,7 @@ export default class Creator extends Component {
             changeNewCategory={this.onNewCategoryChange}
             addNewCategory={this.onNewCategoryAdd}
             categoryNewValueChange={this.onCategoryNewValueChange}
+            categoryAddNewValue={this.onCategoryAddNewValue}
           />
         )
       },
@@ -67,6 +66,27 @@ export default class Creator extends Component {
       </Page>
     );
   }
+
+  serializeData = () => ({
+    categories: this.state.categories,
+    valuesTypes: [this.state.value]
+  });
+
+  onCategoryAddNewValue = categoryName => {
+    this.setState({
+      categories: this.state.categories.map(category => {
+        if (category.name === categoryName) {
+          return {
+            ...category,
+            values: [...category.values, category.newValue],
+            newValue: ""
+          };
+        } else {
+          return category;
+        }
+      })
+    });
+  };
 
   onCategoryNewValueChange = (categoryName, event) => {
     this.setState({
@@ -107,7 +127,7 @@ export default class Creator extends Component {
     this.setState({
       value: {
         ...this.state.value,
-        type: event.target.value
+        dataType: event.target.value
       }
     });
   };

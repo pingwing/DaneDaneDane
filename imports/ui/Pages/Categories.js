@@ -27,6 +27,7 @@ export default class Categories extends Component {
                 key={category.name}
                 category={category}
                 newValueChange={this.props.categoryNewValueChange}
+                addNewValue={this.props.categoryAddNewValue}
               />
             );
           })}
