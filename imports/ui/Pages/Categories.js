@@ -1,11 +1,6 @@
 import React, { Component } from "react";
 import Category from "./Category";
 
-// import RadioGroup from "@material-ui/core/RadioGroup";
-// import FormControlLabel from "@material-ui/core/FormControlLabel";
-// import Radio from "@material-ui/core/Radio";
-// import TextField from "@material-ui/core/TextField";
-
 export default class Categories extends Component {
   constructor(props) {
     super(props);
@@ -26,12 +21,15 @@ export default class Categories extends Component {
           Dodaj nową kategorię
         </button>
         <div>
-          {this.props.categories.map(category => (
-            <Category
-              category={category}
-              newValueChange={this.props.categoryNewValueChange}
-            />
-          ))}
+          {this.props.categories.map(category => {
+            return (
+              <Category
+                key={category.name}
+                category={category}
+                newValueChange={this.props.categoryNewValueChange}
+              />
+            );
+          })}
         </div>
       </>
     );

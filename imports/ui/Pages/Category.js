@@ -6,13 +6,12 @@ export default class Category extends Component {
     super(props);
   }
   render() {
-    console.log(this.props.category);
     return (
       <div>
         <h3>{this.props.category.name}</h3>
         <ul>
           {this.props.category.values.map(value => (
-            <li>{value}</li>
+            <li key={value}>{value}</li>
           ))}
           <li>
             <CategoryInput

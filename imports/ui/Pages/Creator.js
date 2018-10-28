@@ -8,10 +8,6 @@ import StepZilla from "react-stepzilla";
 import "./StepZilla.css";
 import "react-sortable-tree/style.css";
 
-// const categories = [{ name: "", values: [] }];
-
-// const values = [{ name: "", dataType: "" }];
-
 export default class Creator extends Component {
   constructor(props = {}) {
     super(props);
@@ -34,6 +30,7 @@ export default class Creator extends Component {
   }
 
   render() {
+    console.log(this.state.categories);
     const steps = [
       {
         name: "Wartości",
@@ -72,17 +69,22 @@ export default class Creator extends Component {
   }
 
   onCategoryNewValueChange = (categoryName, event) => {
-    console.log(categoryName);
-    console.log(event);
-    // this.setState({
-    //   ...this.state,
-    //   categories: this.state.categories.
-    // })
+    this.setState({
+      categories: this.state.categories.map(category => {
+        if (category.name === categoryName) {
+          return {
+            ...category,
+            newValue: event.target.value
+          };
+        } else {
+          return category;
+        }
+      })
+    });
   };
 
   onNewCategoryAdd = () => {
     this.setState({
-      ...this.state,
       categories: [
         ...this.state.categories,
         {
@@ -97,14 +99,12 @@ export default class Creator extends Component {
 
   onNewCategoryChange = event => {
     this.setState({
-      ...this.state,
       newCategoryName: event.target.value
     });
   };
 
   onSetValueType = event => {
     this.setState({
-      ...this.state,
       value: {
         ...this.state.value,
         type: event.target.value
@@ -114,7 +114,6 @@ export default class Creator extends Component {
 
   onSetValueName = event => {
     this.setState({
-      ...this.state,
       value: {
         ...this.state.value,
         name: event.target.value
