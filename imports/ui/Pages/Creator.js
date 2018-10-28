@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Page } from "../Layout/Page";
-import DataType from "./DataType";
+import Preview from "./Preview";
+import Download from "./Download";
 import Value from "./Value";
 import Categories from "./Categories";
 
@@ -13,13 +14,7 @@ export default class Creator extends Component {
     super(props);
     this.state = {
       newCategoryName: "",
-      categories: [
-        {
-          name: "Płeć",
-          values: ["Mężczyzna", "Kobieta"],
-          newValue: ""
-        }
-      ],
+      categories: [],
       value: {
         dataType: "",
         name: ""
@@ -53,9 +48,11 @@ export default class Creator extends Component {
           />
         )
       },
-      { name: "Podgląd", component: <DataType /> },
-      { name: "Typ podkategorii", component: <DataType /> },
-      { name: "Pobierz plik", component: <DataType /> }
+      { name: "Podgląd", component: <Preview /> },
+      {
+        name: "Pobierz plik",
+        component: <Download download={this.onDownload} />
+      }
     ];
 
     return (
@@ -66,6 +63,10 @@ export default class Creator extends Component {
       </Page>
     );
   }
+
+  onDownload = () => {
+    console.log("Dane dla Przemka", this.serializeData());
+  };
 
   serializeData = () => ({
     categories: this.state.categories,
